@@ -5,7 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ship
-  - Ghost
+  - StartBtn
+  - QuitBtn
+  - BigPapa
+  - Monster
   layers:
   - Default
   - TransparentFX

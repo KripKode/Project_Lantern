@@ -1,27 +1,43 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ShipBehaviour : MonoBehaviour
 {
     public Rigidbody2D rb;
     public float accelerationTime = 2f;
-    public float maxSpeed = 5f;
     private Vector2 movement;
     private float timeLeft;
 
-    void Update()
+    public float shipSpeed;
+
+    public GameObject bigPapa;
+    public Transform[] children;
+
+    private void Start()
     {
-        timeLeft -= Time.deltaTime;
-        if (timeLeft <= 0)
+        bigPapa = GameObject.FindGameObjectWithTag("BigPapa");
+        children = new Transform[bigPapa.transform.childCount];
+
+        for (int i = 0; i < bigPapa.transform.childCount; i++)
         {
-            movement = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-            timeLeft += accelerationTime;
+            children[i] = bigPapa.transform.GetChild(i);
         }
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        rb.AddForce(movement * maxSpeed);
+        if (children.Length == 0)
+            return;
+
+        timeLeft += Time.deltaTime;
+        if (timeLeft >= 8)
+        {
+            movement = children[Random.Range(0, children.Length)].transform.position;
+            timeLeft = 0;
+        }
+
+        transform.position = Vector3.MoveTowards(transform.position, movement, shipSpeed * Time.deltaTime);
     }
 
     void OnBecameInvisible()
