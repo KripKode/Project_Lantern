@@ -10,9 +10,6 @@ public class LightCollision : MonoBehaviour
     [SerializeField]
     LightHouseCC lh;
 
-    [SerializeField]
-    float smallMonsterHealth, mediumMonsterHealth, bigMonsterHealth;
-
     float tutorial;
 
     bool spawnedOnce;
@@ -48,7 +45,7 @@ public class LightCollision : MonoBehaviour
         if (collision.gameObject.CompareTag("Monster"))
         {
             float health = collision.gameObject.GetComponent<GhostBehaviour>().health += Time.deltaTime;
-            if (health >= smallMonsterHealth)
+            if (health >= collision.gameObject.GetComponent<GhostBehaviour>().maxHealth)
             {
                 StartCoroutine(lh.gm.voicelineKillDelay());
                 var go = Instantiate(monsterDeathPrefab, collision.gameObject.transform.position, Quaternion.identity);

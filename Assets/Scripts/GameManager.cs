@@ -13,7 +13,10 @@ public class GameManager : MonoBehaviour
     AudioClip[] monsterSpawnSFXA, monsterSpawnSFXA2;
 
     [SerializeField]
-    BoxCollider2D shipSpawnArea, monsterSpawnArea;
+    BoxCollider2D shipSpawnArea;
+
+    [SerializeField]
+    PolygonCollider2D monsterSpawnArea;
 
     [SerializeField]
     GameObject smolShipPrefab, mediumShipPrefab, bigShipPrefab;
@@ -202,7 +205,7 @@ public class GameManager : MonoBehaviour
         {
             yield return new WaitForSeconds(mediumShipSpawnTimer);
             if (gameFinished)
-                yield break; 
+                yield break;
             SpawnShip(2);
         }
     }
@@ -213,7 +216,7 @@ public class GameManager : MonoBehaviour
         {
             yield return new WaitForSeconds(mediumMonsterSpawnTimer);
             if (gameFinished)
-                yield break; 
+                yield break;
             SpawnMonster(2);
         }
         yield break;
@@ -236,7 +239,7 @@ public class GameManager : MonoBehaviour
         {
             yield return new WaitForSeconds(bigMonsterSpawnTimer);
             if (gameFinished)
-                yield break; 
+                yield break;
             SpawnMonster(3);
         }
         yield break;
@@ -284,13 +287,21 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         var filteredSounds = FilterCurrentClip();
-        audioSource.PlayOneShot(filteredSounds[Random.Range(0, filteredSounds.Length)]);
+        if (!audioSource.isPlaying)
+        {
+            audioSource.clip = (filteredSounds[Random.Range(0, filteredSounds.Length)]);
+            audioSource.Play();
+        }
     }
 
     public IEnumerator voicelineKillDelay()
     {
         yield return new WaitForSeconds(0.25f);
         var filteredSounds = FilterCurrentClip2();
-        audioSource.PlayOneShot(filteredSounds[Random.Range(0, filteredSounds.Length)]);
+        if (!audioSource.isPlaying)
+        {
+            audioSource.clip = (filteredSounds[Random.Range(0, filteredSounds.Length)]);
+            audioSource.Play();
+        }
     }
 }

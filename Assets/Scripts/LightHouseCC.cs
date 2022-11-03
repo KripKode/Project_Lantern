@@ -45,10 +45,19 @@ public class LightHouseCC : MonoBehaviour
         {
             if (shipsLeft <= 0 && !gm.gameFinished)
             {
-                resultsText.text = "Ships Saved: " + savedShips + "\n" + "Lost Ships: " + lostShips;
-                gameFinishObj.SetActive(true);
-                colliderSpot.SetActive(true);
-                gm.gameFinished = true;
+                if(savedShips <= 0)
+                {
+
+                }
+                else
+                {
+                    Debug.Log(PlayerPrefs.GetInt("savedShips"));
+                    PlayerPrefs.SetInt("savedShips", PlayerPrefs.GetInt("savedShips") + savedShips);
+                    resultsText.text = "Ships Saved: " + savedShips + "\n" + "Lost Ships: " + lostShips;
+                    gameFinishObj.SetActive(true);
+                    colliderSpot.SetActive(true);
+                    gm.gameFinished = true;
+                }
             }
         }
 

@@ -5,13 +5,18 @@ using UnityEngine;
 public class GhostBehaviour : MonoBehaviour
 {
     [SerializeField]
+    GameObject anim;
+
+    [SerializeField]
     GameObject shipDeathPrefab;
 
     [SerializeField]
     float attackMulti;
 
     public float monsterSpeed;
-    public float health;
+    public float health, maxHealth;
+
+    public int ghostState;
 
     private void Update()
     {
@@ -44,6 +49,22 @@ public class GhostBehaviour : MonoBehaviour
                 closest = go;
                 distance = curDistance;
             }
+        }
+
+        if (health >= (maxHealth / 4) && health <= (maxHealth / 2))
+            ghostState = 1;
+        if (health >= (maxHealth / 2) && health <= maxHealth)
+            ghostState = 2;
+
+        switch (ghostState)
+        {
+            case 1:
+                anim.SetActive(true);
+                anim.GetComponent<Animator>().speed = 0.25f;
+                break;
+            case 2:
+                anim.GetComponent<Animator>().speed = 2;
+                break;
         }
 
         return closest;

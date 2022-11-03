@@ -34,22 +34,19 @@ public class Menu : MonoBehaviour
     public void connectController()
     {
         WiimoteManager.FindWiimotes();
-
-        //if (WiimoteManager.HasWiimote())
-        //{
-        //    statusText.text = "[GVer: " + gameVer + "] Controller Status: Connected.";
-        //    doneFirstConnection = true;
-        //}
-        //else
-        //{
-        //    statusText.text = "[GVer: " + gameVer + "] Controller Status: Failed connection.";
-        //}
     }
 
+    private void Start()
+    {
+        if (isMenu)
+        {
+            PlayerPrefs.DeleteAll();
+        }
+    }
     private void Update()
     {
         //limitRot();
-
+        
         if (isWii)
         {
             if (WiimoteManager.HasWiimote() && isMenu ||
@@ -96,6 +93,13 @@ public class Menu : MonoBehaviour
                     }
                 } while (ret > 0);
 
+                if (wiimote.Button.a || wiimote.Button.b || wiimote.Button.one || wiimote.Button.two ||
+                    wiimote.Button.d_up || wiimote.Button.d_down || wiimote.Button.d_left || wiimote.Button.d_right ||
+                    wiimote.Button.plus || wiimote.Button.minus ||wiimote.Button.home)
+                {
+                    lightHousePivot.transform.rotation = Quaternion.EulerRotation(Vector3.zero);
+                    singleDeadDetect = false;
+                }
             }
             else if (!WiimoteManager.HasWiimote() && isMenu ||
                !WiimoteManager.HasWiimote() && !isMenu)
