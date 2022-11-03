@@ -9,6 +9,8 @@ TagManager:
   - QuitBtn
   - BigPapa
   - Monster
+  - Continue
+  - BackMenu
   layers:
   - Default
   - TransparentFX

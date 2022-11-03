@@ -10,7 +10,7 @@ public class Menu : MonoBehaviour
     TextMeshProUGUI statusText;
 
     [SerializeField]
-    GameObject lightHouseObj,
+    GameObject lightHousePivot,
         connectPanel,
         menuPanel;
 
@@ -35,22 +35,24 @@ public class Menu : MonoBehaviour
     {
         WiimoteManager.FindWiimotes();
 
-        if (WiimoteManager.HasWiimote())
-        {
-            statusText.text = "[GVer: " + gameVer + "] Controller Status: Connected.";
-            doneFirstConnection = true;
-        }
-        else
-        {
-            statusText.text = "[GVer: " + gameVer + "] Controller Status: Failed connection.";
-        }
+        //if (WiimoteManager.HasWiimote())
+        //{
+        //    statusText.text = "[GVer: " + gameVer + "] Controller Status: Connected.";
+        //    doneFirstConnection = true;
+        //}
+        //else
+        //{
+        //    statusText.text = "[GVer: " + gameVer + "] Controller Status: Failed connection.";
+        //}
     }
 
     private void Update()
     {
+        //limitRot();
+
         if (isWii)
         {
-            if (WiimoteManager.HasWiimote() && doneFirstConnection && isMenu ||
+            if (WiimoteManager.HasWiimote() && isMenu ||
                        WiimoteManager.HasWiimote() && !isMenu)
             {
                 if (isMenu)
@@ -71,10 +73,10 @@ public class Menu : MonoBehaviour
 
                         float deadzoneValue = wiimote.MotionPlus.YawSpeed / 95;
 
-                        if (!singleDeadDetect && deadzoneValue < -0.04 && deadzoneValue > -0.07)
+                        if (!singleDeadDetect && deadzoneValue < -0.04 && deadzoneValue > -0.08)
                         {
-                                deadzone = new Vector3(0, 0, wiimote.MotionPlus.YawSpeed) / 95;
-                                singleDeadDetect = true;
+                            deadzone = new Vector3(0, 0, wiimote.MotionPlus.YawSpeed) / 95;
+                            singleDeadDetect = true;
                         }
 
                         if (!setOffset)
@@ -83,42 +85,40 @@ public class Menu : MonoBehaviour
                             setOffset = true;
                         }
 
-                        lightHouseObj.transform.Rotate(offset - deadzone, Space.Self);
+                        lightHousePivot.transform.Rotate(offset - deadzone, Space.Self);
 
-                        limitRot();
+
                     }
                     else
                     {
                         wiimote.RequestIdentifyWiiMotionPlus();
                         wiimote.ActivateWiiMotionPlus();
                     }
-
-                    //Reset Gyro
-                    if (wiimote.Button.b)
-                    {
-                        singleDeadDetect = false;
-                        lightHouseObj.transform.rotation = Quaternion.Euler(wmpOffset);
-                    }
                 } while (ret > 0);
 
             }
-            else if (!WiimoteManager.HasWiimote() && doneFirstConnection && isMenu ||
+            else if (!WiimoteManager.HasWiimote() && isMenu ||
                !WiimoteManager.HasWiimote() && !isMenu)
             {
                 connectPanel.SetActive(true);
                 statusText.text = "[GVer: " + gameVer + "] Controller Status: Not connected.";
             }
         }
+        else
+        {
+            if (isMenu)
+                menuPanel.SetActive(true);
+        }
     }
 
     void limitRot()
     {
-        Vector3 playerEulerAngles = lightHouseObj.transform.rotation.eulerAngles;
+        Vector3 playerEulerAngles = lightHousePivot.transform.rotation.eulerAngles;
 
         playerEulerAngles.z = (playerEulerAngles.z > 180) ? playerEulerAngles.z - 360 : playerEulerAngles.z;
-        playerEulerAngles.z = Mathf.Clamp(playerEulerAngles.z, -100, 100);
+        playerEulerAngles.z = Mathf.Clamp(playerEulerAngles.z, -200, 200);
 
 
-        lightHouseObj.transform.rotation = Quaternion.Euler(playerEulerAngles);
+        lightHousePivot.transform.rotation = Quaternion.Euler(playerEulerAngles);
     }
 }

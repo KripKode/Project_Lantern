@@ -7,13 +7,9 @@ using UnityEngine.UI;
 
 public class LightHouseCC : MonoBehaviour
 {
-    [SerializeField]
-    TextMeshProUGUI savedShipsTxt;
+    public GameManager gm;
 
-    [SerializeField]
-    GameManager gm;
-
-    public GameObject lightHouseObj, gameFinishObj;
+    public GameObject harborSpot, lightHousePivot, gameFinishObj, colliderSpot;
 
     public Image startFillBar, quitFillBar;
 
@@ -23,35 +19,43 @@ public class LightHouseCC : MonoBehaviour
     [SerializeField, Range(50, 100)]
     public float rotationSpeed;
 
-    public int savedShips;
+    public int savedShips, lostShips, initialShips, shipsLeft;
 
     public float loadGameValue, exitGameValue;
 
     [SerializeField]
-    Animator fadeObj;
+    TextMeshProUGUI resultsText;
+
+    [SerializeField]
+    int levelToLoad;
 
     [SerializeField]
     bool isGame;
 
-    bool started, gameFinish;
+    bool started;
+    private void Start()
+    {
+        initialShips = gm.amountToSpawnShips + gm.amountToSpawnMedShips + gm.amountToSpawnBigShips;
+        shipsLeft = initialShips;
+    }
 
     private void Update()
     {
         if (isGame)
         {
-            savedShipsTxt.text = "Ships Saved: " + savedShips + "/" + gm.amountToSpawnShips.ToString();
-
-            if (savedShips == gm.amountToSpawnShips && !gameFinish)
+            if (shipsLeft <= 0 && !gm.gameFinished)
             {
+                resultsText.text = "Ships Saved: " + savedShips + "\n" + "Lost Ships: " + lostShips;
                 gameFinishObj.SetActive(true);
-                gameFinish = true;
+                colliderSpot.SetActive(true);
+                gm.gameFinished = true;
             }
         }
 
         if (loadGameValue >= 1 && !started)
         {
-            fadeObj.SetTrigger("fadeOut");
-            StartCoroutine(loadScene(1));
+            gm.fadeObj.SetTrigger("fadeOut");
+            StartCoroutine(loadScene(levelToLoad));
             started = true;
         }
 
@@ -63,11 +67,11 @@ public class LightHouseCC : MonoBehaviour
         //Debugging without Wiimote :3
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            lightHouseObj.transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
+            lightHousePivot.transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
         }
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            lightHouseObj.transform.Rotate(0, 0, -rotationSpeed * Time.deltaTime);
+            lightHousePivot.transform.Rotate(0, 0, -rotationSpeed * Time.deltaTime);
         }
     }
 
