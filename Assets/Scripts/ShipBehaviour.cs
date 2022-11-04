@@ -25,6 +25,8 @@ public class ShipBehaviour : MonoBehaviour
     public float health;
     public float maxHealth;
 
+    public bool haveOwner;
+
     private void Start()
     {
         bigPapa = GameObject.FindGameObjectWithTag("BigPapa");

@@ -8,6 +8,12 @@ public class LightCollision : MonoBehaviour
     GameObject monsterDeathPrefab;
 
     [SerializeField]
+    AudioSource aS;
+
+    [SerializeField]
+    AudioClip aC;
+
+    [SerializeField]
     LightHouseCC lh;
 
     float tutorial;
@@ -38,12 +44,15 @@ public class LightCollision : MonoBehaviour
             {
                 lh.shipsLeft--;
                 lh.savedShips++;
+                aS.PlayOneShot(aC);
                 Destroy(collision.gameObject);
             }
         }
 
         if (collision.gameObject.CompareTag("Monster"))
         {
+            GetComponent<AudioSource>().enabled = true;
+
             float health = collision.gameObject.GetComponent<GhostBehaviour>().health += Time.deltaTime;
             if (health >= collision.gameObject.GetComponent<GhostBehaviour>().maxHealth)
             {
@@ -81,6 +90,11 @@ public class LightCollision : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (collision.gameObject.CompareTag("Monster"))
+        {
+            GetComponent<AudioSource>().enabled = false;
+        }
+
         if (collision.gameObject.CompareTag("Ship"))
         {
             collision.gameObject.GetComponent<ShipBehaviour>().isDirected = false;

@@ -4,6 +4,9 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
+    LightHouseCC lh;
+
+    [SerializeField]
     AudioSource audioSource;
 
     [SerializeField]
@@ -33,8 +36,7 @@ public class GameManager : MonoBehaviour
     [SerializeField, Range(1, 100)]
     float smolMonsterSpawnTimer, mediumMonsterSpawnTimer, bigMonsterSpawnTimer;
 
-    [SerializeField]
-    bool isFirstNight, isSecondNight, isThirdNight;
+    public bool isFirstNight, isSecondNight, isThirdNight;
 
     public Animator fadeObj;
 
@@ -86,13 +88,13 @@ public class GameManager : MonoBehaviour
         switch (_shipPrefab)
         {
             case 1:
-                spawnableMonsterLocalScale = smolShipPrefab.transform.localScale;
+                spawnableShipLocalScale = smolShipPrefab.transform.localScale;
                 break;
             case 2:
-                spawnableMonsterLocalScale = mediumShipPrefab.transform.localScale;
+                spawnableShipLocalScale = mediumShipPrefab.transform.localScale;
                 break;
             case 3:
-                spawnableMonsterLocalScale = bigShipPrefab.transform.localScale;
+                spawnableShipLocalScale = bigShipPrefab.transform.localScale;
                 break;
         }
 
@@ -180,9 +182,8 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < amountToSpawnShips; i++)
         {
             yield return new WaitForSeconds(smolShipSpawnTimer);
-            if (gameFinished)
-                yield break;
-            SpawnShip(1);
+            if (!gameFinished && lh.shipsLeft > 0)
+                SpawnShip(1);
         }
     }
 
@@ -191,9 +192,8 @@ public class GameManager : MonoBehaviour
         while (!gameFinished)
         {
             yield return new WaitForSeconds(smolMonsterSpawnTimer);
-            if (gameFinished)
-                yield break;
-            SpawnMonster(1);
+            if (!gameFinished && lh.shipsLeft > 0)
+                SpawnMonster(1);
         }
 
         yield break;
@@ -204,9 +204,8 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < amountToSpawnMedShips; i++)
         {
             yield return new WaitForSeconds(mediumShipSpawnTimer);
-            if (gameFinished)
-                yield break;
-            SpawnShip(2);
+            if (!gameFinished && lh.shipsLeft > 0)
+                SpawnShip(2);
         }
     }
 
@@ -215,9 +214,8 @@ public class GameManager : MonoBehaviour
         while (!gameFinished)
         {
             yield return new WaitForSeconds(mediumMonsterSpawnTimer);
-            if (gameFinished)
-                yield break;
-            SpawnMonster(2);
+            if (!gameFinished && lh.shipsLeft > 0)
+                SpawnMonster(2);
         }
         yield break;
     }
@@ -227,9 +225,8 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < amountToSpawnBigShips; i++)
         {
             yield return new WaitForSeconds(bigShipSpawnTimer);
-            if (gameFinished)
-                yield break;
-            SpawnShip(3);
+            if (!gameFinished && lh.shipsLeft > 0)
+                SpawnShip(3);
         }
     }
 
@@ -238,9 +235,8 @@ public class GameManager : MonoBehaviour
         while (!gameFinished)
         {
             yield return new WaitForSeconds(bigMonsterSpawnTimer);
-            if (gameFinished)
-                yield break;
-            SpawnMonster(3);
+            if (!gameFinished && lh.shipsLeft > 0)
+                SpawnMonster(3);
         }
         yield break;
     }

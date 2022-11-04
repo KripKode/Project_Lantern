@@ -18,6 +18,8 @@ public class GhostBehaviour : MonoBehaviour
 
     public int ghostState;
 
+    public bool isOwner;
+
     private void Update()
     {
         GameObject closestEnemyTarget = FindClosestEnemyWithinRange();
@@ -74,20 +76,42 @@ public class GhostBehaviour : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ship"))
         {
-            float health = collision.gameObject.GetComponent<ShipBehaviour>().health += Time.deltaTime * attackMulti;
-            if (health >= collision.gameObject.GetComponent<ShipBehaviour>().maxHealth)
+            if (!isOwner && !collision.gameObject.GetComponent<ShipBehaviour>().haveOwner)
             {
-                SOLH _obj = null;
-                foreach (var obj in SOLH.Entities)
+                collision.gameObject.GetComponent<ShipBehaviour>().haveOwner = true;
+                isOwner = true;
+            }
+            else if (isOwner && collision.gameObject.GetComponent<ShipBehaviour>().haveOwner)
+            {
+                float health = collision.gameObject.GetComponent<ShipBehaviour>().health += Time.deltaTime * attackMulti;
+                if (health >= collision.gameObject.GetComponent<ShipBehaviour>().maxHealth)
                 {
-                    _obj = obj;
-                }
-                _obj.GetComponent<LightHouseCC>().shipsLeft--;
-                _obj.GetComponent<LightHouseCC>().lostShips++;
+                    SOLH _obj = null;
 
-                var go = Instantiate(shipDeathPrefab, collision.gameObject.transform.position, Quaternion.identity);
-                Destroy(go, 3);
-                Destroy(collision.gameObject);
+                    foreach (var obj in SOLH.Entities)
+                    {
+                        _obj = obj;
+                    }
+
+                    _obj.GetComponent<LightHouseCC>().shipsLeft--;
+                    _obj.GetComponent<LightHouseCC>().lostShips++;
+
+                    var go = Instantiate(shipDeathPrefab, collision.gameObject.transform.position, Quaternion.identity);
+                    Destroy(go, 3);
+                    Destroy(collision.gameObject);
+                }
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ship"))
+        {
+            if (isOwner && collision.gameObject.GetComponent<ShipBehaviour>().haveOwner)
+            {
+                collision.gameObject.GetComponent<ShipBehaviour>().haveOwner = false;
+                isOwner = false;
             }
         }
     }
